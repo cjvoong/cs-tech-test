@@ -1,0 +1,153 @@
+
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "A JSON api for getting credit card recommendations",
+    "version": "1.0",
+    "title": "ScoredCards"
+  },
+  "host": "m33dnjs979.execute-api.us-west-2.amazonaws.com",
+  "basePath": "/CS",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/v2/creditcards": {
+      "post": {
+        "summary": "Find card recommendations",
+        "description": "Find card recommendtions based on a users information",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ScoredCardsRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of recommended credit cards",
+            "schema": {
+              "$ref": "#/definitions/ScoredCardsResponse"
+            }
+          },
+          "400": {
+            "description": "The request contained invalid parameters"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ScoredCardsRequest": {
+      "type": "object",
+      "required": [
+        "date-of-birth",
+        "employment-status",
+        "first-name",
+        "last-name",
+        "score"
+      ],
+      "properties": {
+        "first-name": {
+          "type": "string",
+          "description": "Users first name"
+        },
+        "last-name": {
+          "type": "string",
+          "description": "Users last name"
+        },
+        "date-of-birth": {
+          "type": "string",
+          "format": "date",
+          "description": "Users date of birth, formatted as yyyy/MM/dd",
+          "pattern": "[0-9]{4}/[0-9]{2}/[0-9]{2}"
+        },
+        "score": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Credit score between 0 and 700",
+          "minimum": 0,
+          "maximum": 700
+        },
+        "employment-status": {
+          "type": "string",
+          "description": "Users employment status",
+          "enum": [
+            "FULL_TIME",
+            "PART_TIME",
+            "STUDENT",
+            "UNEMPLOYED",
+            "RETIRED"
+          ]
+        },
+        "salary": {
+          "type": "integer",
+          "format": "int32",
+          "minimum": 0
+        }
+      }
+    },
+    "ScoredCardsResponse": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/CreditCard"
+      }
+    },
+    "CreditCard": {
+      "type": "object",
+      "required": [
+        "annual-percentage-rate",
+        "apply-url",
+        "approval-rating",
+        "attributes",
+        "card",
+        "introductory-offers"
+      ],
+      "properties": {
+        "card": {
+          "type": "string",
+          "description": "Name of the credit card"
+        },
+        "apply-url": {
+          "type": "string",
+          "description": "URL the user can follow to apply for the credit card"
+        },
+        "annual-percentage-rate": {
+          "type": "number",
+          "format": "double",
+          "description": "Annual percentage rate for the card"
+        },
+        "approval-rating": {
+          "type": "number",
+          "format": "double",
+          "description": "The likelihood of the user being approved, from 0.0 to 1.0",
+          "minimum": 0.0,
+          "maximum": 1.0
+        },
+        "attributes": {
+          "type": "array",
+          "description": "List of features of the credit card",
+          "items": {
+            "type": "string"
+          }
+        },
+        "introductory-offers": {
+          "type": "array",
+          "description": "List of introductory offers for the credit card",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

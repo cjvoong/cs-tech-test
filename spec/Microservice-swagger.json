@@ -1,0 +1,153 @@
+
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "ClearScore Technical Test Microservice",
+    "version": "1.0",
+    "title": "ClearScore Technical Test"
+  },
+  "host": "localhost",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/creditcards": {
+      "post": {
+        "summary": "Find credit cards user is eligible for",
+        "description": "Returns a list of credit cards that our partners have indicated the user is eligible to apply for.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreditCardRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A sorted list of credit cards the user is eligible to apply for.",
+            "schema": {
+              "$ref": "#/definitions/CreditCardResponse"
+            }
+          },
+          "400": {
+            "description": "The request contained invalid parameters"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CreditCardRequest": {
+      "type": "object",
+      "required": [
+        "credit-score",
+        "dob",
+        "employment-status",
+        "firstname",
+        "lastname",
+        "salary"
+      ],
+      "properties": {
+        "firstname": {
+          "type": "string",
+          "example": "John",
+          "description": "Users first name"
+        },
+        "lastname": {
+          "type": "string",
+          "example": "Smith",
+          "description": "Users last name"
+        },
+        "dob": {
+          "type": "string",
+          "format": "date",
+          "example": "yyyy/MM/dd",
+          "description": "Users date of birth, formatted as yyyy/MM/dd",
+          "pattern": "[0-9]{4}/[0-9]{2}/[0-9]{2}"
+        },
+        "credit-score": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Credit score between 0 and 700",
+          "minimum": 0,
+          "maximum": 700
+        },
+        "employment-status": {
+          "type": "string",
+          "description": "Users employment status",
+          "enum": [
+            "FULL_TIME",
+            "PART_TIME",
+            "STUDENT",
+            "UNEMPLOYED",
+            "RETIRED"
+          ]
+        },
+        "salary": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Users annual salary",
+          "minimum": 0
+        }
+      }
+    },
+    "CreditCardResponse": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/CreditCard"
+      }
+    },
+    "CreditCard": {
+      "type": "object",
+      "required": [
+        "apply-url",
+        "apr",
+        "features",
+        "name",
+        "provider",
+        "card-score"
+      ],
+      "properties": {
+        "provider": {
+          "type": "string",
+          "description": "Name of the partner that provides the credit card"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the credit card product"
+        },
+        "apply-url": {
+          "type": "string",
+          "description": "URL the user can follow to apply for the credit card"
+        },
+        "apr": {
+          "type": "number",
+          "format": "double",
+          "description": "Annual percentage rate for the card"
+        },
+        "features": {
+          "type": "array",
+          "description": "List of features and benefits the card offers",
+          "items": {
+            "type": "string"
+          }
+        },
+        "card-score": {
+          "type": "number",
+          "format": "double",
+          "description": "The score given to the credit card based on the scoring algorithm"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+atlassian-ide-plugin.xml
+target/
+# Ignore everything _in_ .idea, otherwise exclusions won't work
+/.idea/*
+# Exclude things we want to share/are not generated (properly) by sbt
+!/.idea/codeStyleSettings.xml
+!/.idea/vcs.xml
+!/.idea/inspectionProfiles/
+!/.idea/runConfigurations/
+/.idea_modules/
+/sbt/sbt-settings
+test-output
+.DS_Store
+*.class
+*.log

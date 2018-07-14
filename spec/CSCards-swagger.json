@@ -1,0 +1,121 @@
+
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "A simple API for getting card recommendations for customers",
+    "version": "1.0",
+    "title": "CSCards"
+  },
+  "host": "y4xvbk1ki5.execute-api.us-west-2.amazonaws.com",
+  "basePath": "/CS",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/v1/cards": {
+      "post": {
+        "summary": "Get cards for a user",
+        "description": "Based on a users name, date of birth and credit score return eligible cards",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CardSearchRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of credit cards the user is eligible for.",
+            "schema": {
+              "$ref": "#/definitions/CardSearchResponse"
+            }
+          },
+          "400": {
+            "description": "The request contained invalid parameters"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CardSearchRequest": {
+      "type": "object",
+      "required": [
+        "dateOfBirth",
+        "fullName",
+        "creditScore"
+      ],
+      "properties": {
+        "fullName": {
+          "type": "string",
+          "description": "Users full name"
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "description": "Users date of birth, formatted as yyyy/MM/dd",
+          "pattern": "[0-9]{4}/[0-9]{2}/[0-9]{2}"
+        },
+        "creditScore": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Credit score between 0 and 700",
+          "minimum": 0,
+          "maximum": 700
+        }
+      }
+    },
+    "CardSearchResponse": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Card"
+      }
+    },
+    "Card": {
+      "type": "object",
+      "required": [
+        "apr",
+        "cardName",
+        "eligibility",
+        "url"
+      ],
+      "properties": {
+        "cardName": {
+          "type": "string",
+          "description": "Name of the credit card product"
+        },
+        "url": {
+          "type": "string",
+          "description": "URL the user can follow to apply for the credit card"
+        },
+        "apr": {
+          "type": "number",
+          "format": "double",
+          "description": "Annual percentage rate for the card"
+        },
+        "eligibility": {
+          "type": "number",
+          "format": "double",
+          "description": "How likely the user is to be approved ranging from 0.0 to 10.0",
+          "minimum": 0.0,
+          "maximum": 10.0
+        },
+        "features": {
+          "type": "array",
+          "description": "List of features and benefits the card offers",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
